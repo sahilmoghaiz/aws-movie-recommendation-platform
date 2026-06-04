@@ -1,23 +1,59 @@
-function MovieCard() {
+import { Link } from "react-router-dom";
+
+function MovieCard({ id, title, rating, posterPath }) {
+  const imageUrl =
+    `https://image.tmdb.org/t/p/w500${posterPath}`;
+
+  function handleAddToWatchlist(event) {
+    event.preventDefault();
+
+    console.log("Added to watchlist:", title);
+  }
+
   return (
-    <div
+    <Link
+      to={`/movie/${id}`}
       style={{
-        width: "200px",
-        backgroundColor: "#222",
-        padding: "10px",
-        borderRadius: "10px",
-        margin: "20px",
+        textDecoration: "none",
+        color: "white",
       }}
     >
-      <img
-        src="https://via.placeholder.com/180x250"
-        alt="Movie Poster"
-      />
+      <div
+        style={{
+          width: "200px",
+          backgroundColor: "#222",
+          padding: "10px",
+          borderRadius: "10px",
+          margin: "20px",
+        }}
+      >
+        <img
+          src={imageUrl}
+          alt={title}
+          style={{
+            width: "100%",
+            borderRadius: "8px",
+          }}
+        />
 
-      <h3>Movie Title</h3>
+        <h3>{title}</h3>
 
-      <p>Rating: 8.5</p>
-    </div>
+        <p>
+          Rating: {rating.toFixed(1)}
+        </p>
+
+        <button
+          onClick={handleAddToWatchlist}
+          style={{
+            marginTop: "10px",
+            padding: "5px 10px",
+            cursor: "pointer",
+          }}
+        >
+          +
+        </button>
+      </div>
+    </Link>
   );
 }
 

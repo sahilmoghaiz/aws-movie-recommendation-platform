@@ -10,13 +10,13 @@ function Navbar() {
         justifyContent: "space-between",
       }}
     >
-      <h2 style={{ color: "red" }}>MovieHub</h2>
+      <h2 style={{ color: "#E50914" }}>MovieHub</h2>
 
       <div>
         <Link
           to="/"
           style={{
-            color: "white",
+            color: "#E50914",
             textDecoration: "none",
             marginRight: "20px",
           }}
@@ -27,7 +27,7 @@ function Navbar() {
         <Link
           to="/login"
           style={{
-            color: "white",
+            color: "#E50914",
             textDecoration: "none",
             marginRight: "20px",
           }}
@@ -38,7 +38,7 @@ function Navbar() {
         <Link
           to="/watchlist"
           style={{
-            color: "white",
+            color: "#E50914",
             textDecoration: "none",
           }}
         >
