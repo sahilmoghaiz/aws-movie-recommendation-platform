@@ -1,37 +1,39 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
 
-function Login() {
+function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] =
+    useState("");
 
-  const navigate = useNavigate();
+  function handleSignup() {
+    if (password !== confirmPassword) {
+      alert("Passwords do not match");
+      return;
+    }
 
-  function handleLogin() {
     const users =
       JSON.parse(
         localStorage.getItem("users")
       ) || [];
 
-    const foundUser = users.find(
-      (user) =>
-        user.email === email &&
-        user.password === password
-    );
+    const newUser = {
+      email,
+      password,
+    };
 
-    if (!foundUser) {
-      alert("Invalid Credentials");
-      return;
-    }
+    users.push(newUser);
 
     localStorage.setItem(
-      "currentUser",
-      JSON.stringify(foundUser)
+      "users",
+      JSON.stringify(users)
     );
 
-    alert("Login Successful!");
+    alert("Account Created Successfully!");
 
-    navigate("/");
+    setEmail("");
+    setPassword("");
+    setConfirmPassword("");
   }
 
   return (
@@ -50,7 +52,7 @@ function Login() {
           width: "350px",
         }}
       >
-        <h1>Login</h1>
+        <h1>Sign Up</h1>
 
         <input
           type="email"
@@ -76,12 +78,26 @@ function Login() {
           style={{
             width: "100%",
             padding: "10px",
+            marginBottom: "10px",
+          }}
+        />
+
+        <input
+          type="password"
+          placeholder="Confirm Password"
+          value={confirmPassword}
+          onChange={(e) =>
+            setConfirmPassword(e.target.value)
+          }
+          style={{
+            width: "100%",
+            padding: "10px",
             marginBottom: "15px",
           }}
         />
 
         <button
-          onClick={handleLogin}
+          onClick={handleSignup}
           style={{
             width: "100%",
             padding: "12px",
@@ -91,31 +107,11 @@ function Login() {
             cursor: "pointer",
           }}
         >
-          Login
+          Create Account
         </button>
-
-        <p
-          style={{
-            marginTop: "15px",
-            textAlign: "center",
-          }}
-        >
-          Don't have an account?
-
-          <Link
-            to="/signup"
-            style={{
-              color: "#E50914",
-              marginLeft: "5px",
-              textDecoration: "none",
-            }}
-          >
-            Sign Up
-          </Link>
-        </p>
       </div>
     </div>
   );
 }
 
-export default Login;
+export default Signup;

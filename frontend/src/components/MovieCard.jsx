@@ -4,12 +4,40 @@ function MovieCard({ id, title, rating, posterPath }) {
   const imageUrl =
     `https://image.tmdb.org/t/p/w500${posterPath}`;
 
-  function handleAddToWatchlist(event) {
-    event.preventDefault();
+ function handleAddToWatchlist(event) {
+  event.preventDefault();
 
-    console.log("Added to watchlist:", title);
-  }
+  const movie = {
+    id,
+    title,
+    rating,
+    posterPath,
+  };
 
+ const existingWatchlist =
+  JSON.parse(
+    localStorage.getItem("watchlist")
+  ) || [];
+
+const alreadyExists =
+  existingWatchlist.some(
+    (savedMovie) => savedMovie.id === movie.id
+  );
+
+if (alreadyExists) {
+  console.log("Movie already in watchlist");
+  return;
+}
+
+existingWatchlist.push(movie);
+
+  localStorage.setItem(
+    "watchlist",
+    JSON.stringify(existingWatchlist)
+  );
+
+  console.log("Saved:", movie);
+}
   return (
     <Link
       to={`/movie/${id}`}
