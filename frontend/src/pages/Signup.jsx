@@ -1,10 +1,13 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] =
     useState("");
+
+  const navigate = useNavigate();
 
   function handleSignup() {
     if (password !== confirmPassword) {
@@ -34,6 +37,8 @@ function Signup() {
     setEmail("");
     setPassword("");
     setConfirmPassword("");
+
+    navigate("/login");
   }
 
   return (
@@ -89,6 +94,11 @@ function Signup() {
           onChange={(e) =>
             setConfirmPassword(e.target.value)
           }
+          onKeyDown={(event) => {
+            if (event.key === "Enter") {
+              handleSignup();
+            }
+          }}
           style={{
             width: "100%",
             padding: "10px",
@@ -114,4 +124,4 @@ function Signup() {
   );
 }
 
-export default Signup;
+export default Signup;  

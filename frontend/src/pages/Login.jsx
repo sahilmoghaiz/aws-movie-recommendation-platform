@@ -8,6 +8,14 @@ function Login() {
   const navigate = useNavigate();
 
   function handleLogin() {
+    if (
+      email.trim() === "" ||
+      password.trim() === ""
+    ) {
+      alert("Please fill all fields");
+      return;
+    }
+
     const users =
       JSON.parse(
         localStorage.getItem("users")
@@ -73,6 +81,11 @@ function Login() {
           onChange={(e) =>
             setPassword(e.target.value)
           }
+          onKeyDown={(event) => {
+            if (event.key === "Enter") {
+              handleLogin();
+            }
+          }}
           style={{
             width: "100%",
             padding: "10px",

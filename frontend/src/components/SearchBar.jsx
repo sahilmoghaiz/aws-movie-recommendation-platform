@@ -4,10 +4,13 @@ function SearchBar({ onSearch }) {
   const [query, setQuery] = useState("");
 
   function handleSearch() {
-    if (onSearch) {
-      onSearch(query);
-    }
+  if (
+    onSearch &&
+    query.trim() !== ""
+  ) {
+    onSearch(query);
   }
+}
 
   return (
     <div
@@ -18,24 +21,29 @@ function SearchBar({ onSearch }) {
       }}
     >
       <input
-        type="text"
-        placeholder="Search movies..."
-        value={query}
-        onChange={(event) =>
-          setQuery(event.target.value)
-        }
-        style={{
-          width: "100%",
-          padding: "12px",
-          fontSize: "16px",
-          borderRadius: "8px",
-          border: "none",
-          backgroundColor: "#222",
-          color: "#FFFFFF",
-          fontWeight: "bold",
-          outline: "none",
-        }}
-      />
+  type="text"
+  placeholder="Search movies..."
+  value={query}
+  onChange={(event) =>
+    setQuery(event.target.value)
+  }
+  onKeyDown={(event) => {
+    if (event.key === "Enter") {
+      handleSearch();
+    }
+  }}
+  style={{
+    width: "100%",
+    padding: "12px",
+    fontSize: "16px",
+    borderRadius: "8px",
+    border: "none",
+    backgroundColor: "#222",
+    color: "#FFFFFF",
+    fontWeight: "bold",
+    outline: "none",
+  }}
+/>
 
       <button
         onClick={handleSearch}
