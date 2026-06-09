@@ -39,7 +39,7 @@ if (alreadyExists) {
 
   setTimeout(() => {
     setMessage("");
-  }, 3000);
+  }, 1000);
 
   return;
 }
@@ -57,7 +57,7 @@ existingWatchlist.push(movie);
 
 setTimeout(() => {
   setMessage("");
-}, 3000);
+}, 1000);
 }
   return (
   <>
@@ -86,14 +86,23 @@ setTimeout(() => {
       }}
     >
       <div
-        style={{
-          width: "200px",
-          backgroundColor: "#222",
-          padding: "10px",
-          borderRadius: "10px",
-          margin: "20px",
-        }}
-      >
+  style={{
+    width: "200px",
+    backgroundColor: "#222",
+    padding: "10px",
+    borderRadius: "10px",
+    margin: "20px",
+    transition: "0.3s",
+  }}
+  onMouseEnter={(e) =>
+    (e.currentTarget.style.transform =
+      "scale(1.05)")
+  }
+  onMouseLeave={(e) =>
+    (e.currentTarget.style.transform =
+      "scale(1)")
+  }
+>
         <img
           src={imageUrl}
           alt={title}

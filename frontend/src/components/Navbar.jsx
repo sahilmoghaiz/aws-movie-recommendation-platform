@@ -12,12 +12,21 @@ function Navbar() {
   );
 
   function handleLogout() {
-    localStorage.removeItem("currentUser");
+  const confirmLogout =
+    window.confirm(
+      "Are you sure you want to logout?"
+    );
 
-    navigate("/login");
-
-    window.location.reload();
+  if (!confirmLogout) {
+    return;
   }
+
+  localStorage.removeItem("currentUser");
+
+  navigate("/login");
+
+  window.location.reload();
+}
 
   return (
     <nav
@@ -30,14 +39,14 @@ function Navbar() {
       }}
     >
       <Link
-  to="/"
-  style={{
-    color: "#E50914",
-    textDecoration: "none",
-  }}
->
-  <h2>MovieHub</h2>
-</Link>
+        to="/"
+        style={{
+          color: "#E50914",
+          textDecoration: "none",
+        }}
+      >
+        <h2>MovieHub</h2>
+      </Link>
 
       <div
         style={{
@@ -90,14 +99,17 @@ function Navbar() {
                   )
                 }
                 style={{
-                  background: "none",
-                  border: "none",
-                  color: "#E50914",
+                  backgroundColor: "#222",
+                  border: "1px solid #333",
+                  color: "white",
                   cursor: "pointer",
-                  fontSize: "16px",
+                  fontSize: "15px",
+                  padding: "8px 12px",
+                  borderRadius: "8px",
+                  transition: "0.3s",
                 }}
               >
-                Profile ▼
+                👤 {currentUser.email.split("@")[0]} ▼
               </button>
 
               {showProfileMenu && (
@@ -105,13 +117,14 @@ function Navbar() {
                   style={{
                     position: "absolute",
                     right: "0",
-                    top: "35px",
+                    top: "45px",
                     backgroundColor: "#222",
                     padding: "15px",
                     borderRadius: "8px",
                     minWidth: "220px",
                     boxShadow:
                       "0px 0px 10px rgba(0,0,0,0.5)",
+                    zIndex: 1000,
                   }}
                 >
                   <p
@@ -136,7 +149,7 @@ function Navbar() {
                       cursor: "pointer",
                     }}
                   >
-                    Logout
+                    🚪 Logout
                   </button>
                 </div>
               )}
