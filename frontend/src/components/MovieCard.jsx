@@ -2,10 +2,19 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 
 
-function MovieCard({ id, title, rating, posterPath }) {
+function MovieCard({
+  id,
+  title,
+  name,
+  rating,
+  posterPath,
+  mediaType = "movie",
+}) {
 
   const [message, setMessage] =
     useState("");
+  const displayTitle =
+  title || name;
 
   const imageUrl =
     `https://image.tmdb.org/t/p/w500${posterPath}`;
@@ -15,12 +24,12 @@ function MovieCard({ id, title, rating, posterPath }) {
 
 
   const movie = {
-    id,
-    title,
-    rating,
-    posterPath,
-    watched: false,
-  };
+  id,
+  title: displayTitle,
+  rating,
+  posterPath,
+  watched: false,
+};
 
  const existingWatchlist =
   JSON.parse(
@@ -79,7 +88,7 @@ setTimeout(() => {
     )}
 
     <Link
-      to={`/movie/${id}`}
+      to={`/${mediaType}/${id}`}
       style={{
         textDecoration: "none",
         color: "white",
@@ -105,17 +114,17 @@ setTimeout(() => {
 >
         <img
           src={imageUrl}
-          alt={title}
+          alt={displayTitle}
           style={{
             width: "100%",
             borderRadius: "8px",
           }}
         />
 
-        <h3>{title}</h3>
+        <h3>{displayTitle}</h3>
 
         <p>
-          Rating: {rating.toFixed(1)}
+          Rating: {rating?.toFixed(1) || "N/A"}
         </p>
 
         <button

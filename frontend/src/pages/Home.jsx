@@ -3,29 +3,43 @@ import { useLocation } from "react-router-dom";
 import MovieCard from "../components/MovieCard";
 import {
   getTrendingMovies,
+  getTrendingTVShows,
   searchMovies,
+  searchTVShows,
 } from "../services/tmdbService";
 import SearchBar from "../components/SearchBar";
 
 function Home() {
-  const [movies, setMovies] = useState([]);
+  const [movies, setMovies] =
+    useState([]);
+
+  const [tvShows, setTVShows] =
+    useState([]);
+
   const [loading, setLoading] =
     useState(true);
 
   const [searchQuery, setSearchQuery] =
     useState("");
 
+  const [activeTab, setActiveTab] =
+    useState("all");
+
   const location = useLocation();
 
-  async function fetchTrendingMovies() {
+  async function fetchTrendingContent() {
     setLoading(true);
 
     setSearchQuery("");
 
-    const data =
+    const movieData =
       await getTrendingMovies();
 
-    setMovies(data);
+    const tvData =
+      await getTrendingTVShows();
+
+    setMovies(movieData);
+    setTVShows(tvData);
 
     setLoading(false);
   }
@@ -35,16 +49,38 @@ function Home() {
 
     setSearchQuery(query);
 
-    const data =
-      await searchMovies(query);
+    if (activeTab === "movies") {
+      const movieData =
+        await searchMovies(query);
 
-    setMovies(data);
+      setMovies(movieData);
+    }
+
+    else if (
+      activeTab === "tv"
+    ) {
+      const tvData =
+        await searchTVShows(query);
+
+      setTVShows(tvData);
+    }
+
+    else {
+      const movieData =
+        await searchMovies(query);
+
+      const tvData =
+        await searchTVShows(query);
+
+      setMovies(movieData);
+      setTVShows(tvData);
+    }
 
     setLoading(false);
   }
 
   useEffect(() => {
-    fetchTrendingMovies();
+    fetchTrendingContent();
   }, [location.key]);
 
   return (
@@ -52,6 +88,77 @@ function Home() {
       <SearchBar
         onSearch={handleSearch}
       />
+
+     <div
+  style={{
+    display: "flex",
+    gap: "15px",
+    marginBottom: "25px",
+  }}
+>
+  <button
+    onClick={() =>
+      setActiveTab("all")
+    }
+    style={{
+      backgroundColor:
+        activeTab === "all"
+          ? "#E50914"
+          : "#222",
+      color: "white",
+      border: "none",
+      padding: "10px 18px",
+      borderRadius: "8px",
+      cursor: "pointer",
+      fontWeight: "bold",
+      transition: "0.3s",
+    }}
+  >
+    🔥 All ({movies.length + tvShows.length})
+  </button>
+
+  <button
+    onClick={() =>
+      setActiveTab("movies")
+    }
+    style={{
+      backgroundColor:
+        activeTab === "movies"
+          ? "#E50914"
+          : "#222",
+      color: "white",
+      border: "none",
+      padding: "10px 18px",
+      borderRadius: "8px",
+      cursor: "pointer",
+      fontWeight: "bold",
+      transition: "0.3s",
+    }}
+  >
+    🎬 Movies ({movies.length})
+  </button>
+
+  <button
+    onClick={() =>
+      setActiveTab("tv")
+    }
+    style={{
+      backgroundColor:
+        activeTab === "tv"
+          ? "#E50914"
+          : "#222",
+      color: "white",
+      border: "none",
+      padding: "10px 18px",
+      borderRadius: "8px",
+      cursor: "pointer",
+      fontWeight: "bold",
+      transition: "0.3s",
+    }}
+  >
+    📺 TV Shows ({tvShows.length})
+  </button>
+</div>
 
       <div
         style={{
@@ -64,13 +171,13 @@ function Home() {
         <h1>
           {searchQuery
             ? `Results For "${searchQuery}"`
-            : "Trending Movies"}
+            : "Trending Content"}
         </h1>
 
         {searchQuery && (
           <button
             onClick={
-              fetchTrendingMovies
+              fetchTrendingContent
             }
             style={{
               backgroundColor:
@@ -89,12 +196,13 @@ function Home() {
 
       {loading && (
         <h2>
-          🎬 Loading Movies...
+          🎬 Loading...
         </h2>
       )}
 
       {!loading &&
-        movies.length === 0 && (
+        movies.length === 0 &&
+        tvShows.length === 0 && (
           <div
             style={{
               textAlign: "center",
@@ -102,16 +210,12 @@ function Home() {
             }}
           >
             <h2>
-              No movies found.
+              No results found.
             </h2>
-
-            <p>
-              Try another search.
-            </p>
 
             <button
               onClick={
-                fetchTrendingMovies
+                fetchTrendingContent
               }
               style={{
                 backgroundColor:
@@ -132,7 +236,73 @@ function Home() {
         )}
 
       {!loading &&
-        movies.length > 0 && (
+        activeTab === "all" && (
+          <>
+            <h2>
+              🎬 Trending Movies
+            </h2>
+
+            <div
+              style={{
+                display: "flex",
+                flexWrap: "wrap",
+              }}
+            >
+              {movies.map(
+                (movie) => (
+                  <MovieCard
+                    key={movie.id}
+                    id={movie.id}
+                    title={
+                      movie.title
+                    }
+                    rating={
+                      movie.vote_average
+                    }
+                    posterPath={
+                      movie.poster_path
+                    }
+                    mediaType="movie"
+                  />
+                )
+              )}
+            </div>
+
+            <h2>
+              📺 Trending TV Shows
+            </h2>
+
+            <div
+              style={{
+                display: "flex",
+                flexWrap: "wrap",
+              }}
+            >
+              {tvShows.map(
+                (show) => (
+                  <MovieCard
+                    key={show.id}
+                    id={show.id}
+                    name={
+                      show.name
+                    }
+                    rating={
+                      show.vote_average
+                    }
+                    posterPath={
+                      show.poster_path
+                    }
+                    mediaType="tv"
+                  />
+                )
+              )}
+            </div>
+          </>
+        )}
+
+      {!loading &&
+        activeTab ===
+          "movies" && (
           <div
             style={{
               display: "flex",
@@ -153,6 +323,37 @@ function Home() {
                   posterPath={
                     movie.poster_path
                   }
+                  mediaType="movie"
+                />
+              )
+            )}
+          </div>
+        )}
+
+      {!loading &&
+        activeTab ===
+          "tv" && (
+          <div
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+            }}
+          >
+            {tvShows.map(
+              (show) => (
+                <MovieCard
+                  key={show.id}
+                  id={show.id}
+                  name={
+                    show.name
+                  }
+                  rating={
+                    show.vote_average
+                  }
+                  posterPath={
+                    show.poster_path
+                  }
+                  mediaType="tv"
                 />
               )
             )}
