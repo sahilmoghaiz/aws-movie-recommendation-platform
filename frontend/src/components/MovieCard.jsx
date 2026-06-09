@@ -1,146 +1,193 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
 
-
 function MovieCard({
   id,
   title,
   name,
   rating,
   posterPath,
-  mediaType = "movie",
+  releaseDate,
+  mediaType,
 }) {
-
   const [message, setMessage] =
     useState("");
+
   const displayTitle =
-  title || name;
+    title || name;
+
+  const year =
+    releaseDate
+      ? releaseDate.slice(0, 4)
+      : "N/A";
 
   const imageUrl =
     `https://image.tmdb.org/t/p/w500${posterPath}`;
 
- function handleAddToWatchlist(event) {
-  event.preventDefault();
+  function handleAddToWatchlist(
+    event
+  ) {
+    event.preventDefault();
 
+    const movie = {
+      id,
+      title: displayTitle,
+      rating,
+      posterPath,
+      watched: false,
+    };
 
-  const movie = {
-  id,
-  title: displayTitle,
-  rating,
-  posterPath,
-  watched: false,
-};
+    const existingWatchlist =
+      JSON.parse(
+        localStorage.getItem(
+          "watchlist"
+        )
+      ) || [];
 
- const existingWatchlist =
-  JSON.parse(
-    localStorage.getItem("watchlist")
-  ) || [];
+    const alreadyExists =
+      existingWatchlist.some(
+        (savedMovie) =>
+          savedMovie.id ===
+          movie.id
+      );
 
-const alreadyExists =
-  existingWatchlist.some(
-    (savedMovie) => savedMovie.id === movie.id
-  );
+    if (alreadyExists) {
+      setMessage(
+        "⚠️ Movie Already In Watchlist"
+      );
 
-if (alreadyExists) {
-  setMessage(
-    "⚠️ Movie Already In Watchlist"
-  );
+      setTimeout(() => {
+        setMessage("");
+      }, 1000);
 
-  setTimeout(() => {
-    setMessage("");
-  }, 1000);
+      return;
+    }
 
-  return;
-}
+    existingWatchlist.push(
+      movie
+    );
 
-existingWatchlist.push(movie);
+    localStorage.setItem(
+      "watchlist",
+      JSON.stringify(
+        existingWatchlist
+      )
+    );
 
-  localStorage.setItem(
-    "watchlist",
-    JSON.stringify(existingWatchlist)
-  );
+    setMessage(
+      "✅ Movie Added To Watchlist"
+    );
 
-  setMessage(
-  "✅ Movie Added To Watchlist"
-);
+    setTimeout(() => {
+      setMessage("");
+    }, 1000);
+  }
 
-setTimeout(() => {
-  setMessage("");
-}, 1000);
-}
   return (
-  <>
-    {message && (
-      <div
-        style={{
-          position: "fixed",
-          top: "20px",
-          right: "20px",
-          backgroundColor: "#28a745",
-          color: "white",
-          padding: "12px 18px",
-          borderRadius: "8px",
-          zIndex: 1000,
-        }}
-      >
-        {message}
-      </div>
-    )}
-
-    <Link
-      to={`/${mediaType}/${id}`}
-      style={{
-        textDecoration: "none",
-        color: "white",
-      }}
-    >
-      <div
-  style={{
-    width: "200px",
-    backgroundColor: "#222",
-    padding: "10px",
-    borderRadius: "10px",
-    margin: "20px",
-    transition: "0.3s",
-  }}
-  onMouseEnter={(e) =>
-    (e.currentTarget.style.transform =
-      "scale(1.05)")
-  }
-  onMouseLeave={(e) =>
-    (e.currentTarget.style.transform =
-      "scale(1)")
-  }
->
-        <img
-          src={imageUrl}
-          alt={displayTitle}
+    <>
+      {message && (
+        <div
           style={{
-            width: "100%",
-            borderRadius: "8px",
-          }}
-        />
-
-        <h3>{displayTitle}</h3>
-
-        <p>
-          Rating: {rating?.toFixed(1) || "N/A"}
-        </p>
-
-        <button
-          onClick={handleAddToWatchlist}
-          style={{
-            marginTop: "10px",
-            padding: "5px 10px",
-            cursor: "pointer",
+            position: "fixed",
+            top: "20px",
+            right: "20px",
+            backgroundColor:
+              "#28a745",
+            color: "white",
+            padding:
+              "12px 18px",
+            borderRadius:
+              "8px",
+            zIndex: 1000,
           }}
         >
-          +
-        </button>
-      </div>
-    </Link>
-  </>
-);
+          {message}
+        </div>
+      )}
+
+      <Link
+        to={`/${mediaType}/${id}`}
+        style={{
+          textDecoration: "none",
+          color: "white",
+        }}
+      >
+        <div
+          style={{
+            width: "200px",
+            backgroundColor:
+              "#222",
+            padding: "10px",
+            borderRadius: "10px",
+            margin: "20px",
+            transition: "0.3s",
+          }}
+          onMouseEnter={(e) =>
+            (e.currentTarget.style.transform =
+              "scale(1.05)")
+          }
+          onMouseLeave={(e) =>
+            (e.currentTarget.style.transform =
+              "scale(1)")
+          }
+        >
+          <img
+            src={imageUrl}
+            alt={displayTitle}
+            style={{
+              width: "100%",
+              borderRadius: "8px",
+            }}
+          />
+
+         <div
+  style={{
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
+    marginTop: "10px",
+  }}
+>
+  <div>
+    <h3
+      style={{
+        margin: "0",
+      }}
+    >
+      {displayTitle}
+    </h3>
+
+    <p>
+      📅 {year}
+    </p>
+
+    <p>
+      ⭐{" "}
+      {rating?.toFixed(
+        1
+      ) || "N/A"}
+    </p>
+  </div>
+
+  <button
+    onClick={
+      handleAddToWatchlist
+    }
+    style={{
+      padding: "8px 12px",
+      cursor: "pointer",
+      borderRadius: "6px",
+      fontWeight: "bold",
+      height: "40px",
+    }}
+  >
+    +
+  </button>
+</div>
+        </div>
+      </Link>
+    </>
+  );
 }
 
 export default MovieCard;
