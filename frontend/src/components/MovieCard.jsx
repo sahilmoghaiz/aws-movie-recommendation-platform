@@ -1,17 +1,25 @@
 import { Link } from "react-router-dom";
+import { useState } from "react";
+
 
 function MovieCard({ id, title, rating, posterPath }) {
+
+  const [message, setMessage] =
+    useState("");
+
   const imageUrl =
     `https://image.tmdb.org/t/p/w500${posterPath}`;
 
  function handleAddToWatchlist(event) {
   event.preventDefault();
 
+
   const movie = {
     id,
     title,
     rating,
     posterPath,
+    watched: false,
   };
 
  const existingWatchlist =
@@ -25,7 +33,14 @@ const alreadyExists =
   );
 
 if (alreadyExists) {
-  console.log("Movie already in watchlist");
+  setMessage(
+    "⚠️ Movie Already In Watchlist"
+  );
+
+  setTimeout(() => {
+    setMessage("");
+  }, 3000);
+
   return;
 }
 
@@ -36,9 +51,33 @@ existingWatchlist.push(movie);
     JSON.stringify(existingWatchlist)
   );
 
-  console.log("Saved:", movie);
+  setMessage(
+  "✅ Movie Added To Watchlist"
+);
+
+setTimeout(() => {
+  setMessage("");
+}, 3000);
 }
   return (
+  <>
+    {message && (
+      <div
+        style={{
+          position: "fixed",
+          top: "20px",
+          right: "20px",
+          backgroundColor: "#28a745",
+          color: "white",
+          padding: "12px 18px",
+          borderRadius: "8px",
+          zIndex: 1000,
+        }}
+      >
+        {message}
+      </div>
+    )}
+
     <Link
       to={`/movie/${id}`}
       style={{
@@ -82,7 +121,8 @@ existingWatchlist.push(movie);
         </button>
       </div>
     </Link>
-  );
+  </>
+);
 }
 
 export default MovieCard;
